@@ -1,32 +1,162 @@
+version: '3.8'
+
 services:
+  # Backend Cloudflare Worker (Wrangler dev server)
   backend:
     build:
       context: ./backend
+      dockerfile: Dockerfile
+    container_name: wellbeing-backend
     ports:
       - "8787:8787"
     environment:
       - NODE_ENV=development
-      - PORT=8787
+      - ENVIRONMENT=development
+      - WRANGLER_LOG=debug
+      - LOG_LEVEL=debug
     volumes:
       - ./backend:/app
       - /app/node_modules
+      - /app/.wrangler
     healthcheck:
-      test: ["CMD", "wget", "-qO", "-", "http://localhost:8787/api/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8787/api/health"]
       interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 5
       start_period: 20s
+    networks:
+      - wellbeing-network
+    restart: unless-stopped
+    develop:
+      watch:
+        - path: ./backend/src
+          action: rebuild
+        - path: ./backend/package.json
+          action: rebuild
 
+  # Frontend Next.js application
   frontend:
     build:
       context: ./frontend
+      dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_API_URL: http://localhost:8787
+        NODE_ENV: development
+    container_name: wellbeing-frontend
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8787
-      - NODE_ENV=development
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://backend:8787
+      NEXT_PUBLIC_ENVIRONMENT: development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
     depends_on:
       backend:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - wellbeing-network
+    restart: unless-stopped
+    develop:
+      watch:
+        - path: ./frontend/src
+          action: rebuild
+        - path: ./frontend/package.json
+          action: rebuild
+
+  # Redis cache (optional - for session caching)
+  redis:
+    image: redis:7-alpine
+    container_name: wellbeing-redis
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - wellbeing-network
+    restart: unless-stopped
+    profiles:
+      - optional
+
+  # PostgreSQL database (optional - if migrating from SQLite)
+  postgres:
+    image: postgres:16-alpine
+    container_name: wellbeing-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-wellness}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: ${POSTGRES_DB:-wellbeing_db}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-wellness}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - wellbeing-network
+    restart: unless-stopped
+    profiles:
+      - optional
+
+  # PG Admin for database management (optional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: wellbeing-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - wellbeing-network
+    restart: unless-stopped
+    profiles:
+      - optional
+
+  # Nginx reverse proxy (for production-like setup)
+  nginx:
+    image: nginx:alpine
+    container_name: wellbeing-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - wellbeing-network
+    restart: unless-stopped
+    profiles:
+      - optional
+
+networks:
+  wellbeing-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  postgres-data:

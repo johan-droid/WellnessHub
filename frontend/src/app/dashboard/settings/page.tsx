@@ -128,11 +128,31 @@ export default function SettingsPage() {
       ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : settings.theme;
 
-    if (resolvedTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    const updateTheme = (theme: string) => {
+      if (theme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
+
+    updateTheme(resolvedTheme);
+
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    
+    const handleThemeChange = (e: MediaQueryListEvent) => {
+      if (settings.theme === "system") {
+        updateTheme(e.matches ? "dark" : "light");
+      }
+    };
+
+    // addEventListener is the modern approach (replaces deprecated addListener)
+    mediaQuery.addEventListener("change", handleThemeChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleThemeChange);
+    };
   }, [settings.theme]);
 
   const displayName = useMemo(() => {

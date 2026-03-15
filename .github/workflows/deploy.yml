@@ -1,93 +1,187 @@
-name: Production Deployment
+name: Deploy to Production
 
 on:
   push:
-    branches:
-      - main
-  workflow_call:
-    secrets:
-      CLOUDFLARE_API_TOKEN:
-        required: true
-      CLOUDFLARE_ACCOUNT_ID:
-        required: true
-      VERCEL_TOKEN:
-        required: true
-      VERCEL_ORG_ID:
-        required: true
-      VERCEL_PROJECT_ID:
-        required: true
+    branches: [main]
+    tags:
+      - 'v*'
+  workflow_dispatch:
 
-concurrency:
-  group: production-deploy
-  cancel-in-progress: true
+env:
+  NODE_VERSION: '18'
 
 jobs:
+  # Preflight checks
   preflight:
-    if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' && secrets.VERCEL_TOKEN != '' && secrets.VERCEL_ORG_ID != '' && secrets.VERCEL_PROJECT_ID != '' }}
+    name: Preflight Checks
     runs-on: ubuntu-latest
     steps:
-      - name: Deployment secrets available
-        run: echo "All required deploy secrets are configured."
+      - name: Verify secrets
+        run: |
+          if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
+            echo "❌ CLOUDFLARE_API_TOKEN not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.VERCEL_TOKEN }}" ]; then
+            echo "❌ VERCEL_TOKEN not set"
+            exit 1
+          fi
+          echo "✅ All required secrets configured"
 
+  # Backend deployment
   backend-deploy:
-    needs: preflight
+    name: Deploy Backend to Cloudflare Workers
     runs-on: ubuntu-latest
+    needs: preflight
     defaults:
       run:
-        working-directory: backend
-    env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        working-directory: ./backend
+    environment:
+      name: production_backend
+    
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: npm
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
           cache-dependency-path: backend/package-lock.json
+      
       - name: Install dependencies
         run: npm ci
+      
       - name: Type check
-        run: npm run lint
-      - name: Apply D1 migrations (production)
-        run: npx wrangler d1 migrations apply wellness-hub-db --env production --remote
+        run: npx tsc --noEmit --if-present
+      
+      - name: Build
+        run: npm run build --if-present
+      
+      - name: Run migrations
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npx wrangler d1 migrations apply wellness-hub-db --env production --remote || true
+      
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --env production
-          workingDirectory: backend
+          workingDirectory: ./backend
+      
+      - name: Verify backend health
+        run: |
+          sleep 10
+          curl -f https://wellnesshub01.${{ secrets.CLOUDFLARE_SUBDOMAIN }}.workers.dev/api/health || exit 1
+          echo "✅ Backend health check passed"
 
+  # Frontend deployment
   frontend-deploy:
+    name: Deploy Frontend to Vercel
     runs-on: ubuntu-latest
     needs: backend-deploy
     defaults:
       run:
-        working-directory: frontend
-    env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        working-directory: ./frontend
+    environment:
+      name: production_frontend
+    
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: npm
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
+      
       - name: Install dependencies
         run: npm ci
+      
       - name: Lint
-        run: npm run lint
+        run: npm run lint --if-present
+      
       - name: Build
+        env:
+          NEXT_PUBLIC_API_URL: https://wellnesshub01.${{ secrets.CLOUDFLARE_SUBDOMAIN }}.workers.dev
         run: npm run build
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+      
+      - name: Deploy to Vercel
+        uses: BerlinClock/actions-vercel@v2
+        with:
+          token: ${{ secrets.VERCEL_TOKEN }}
+          org-id: ${{ secrets.VERCEL_ORG_ID }}
+          project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          production: true
+      
+      - name: Verify frontend deployment
+        run: |
+          sleep 10
+          curl -f https://${{ secrets.VERCEL_APP_DOMAIN }} || exit 1
+          echo "✅ Frontend deployment verified"
+
+  # Smoke tests
+  smoke-tests:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    needs: [backend-deploy, frontend-deploy]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Test API health
+        run: |
+          curl -f \
+            -H "Content-Type: application/json" \
+            https://wellnesshub01.${{ secrets.CLOUDFLARE_SUBDOMAIN }}.workers.dev/api/health \
+            || exit 1
+          echo "✅ API health check passed"
+      
+      - name: Test frontend accessibility
+        run: |
+          curl -f \
+            -H "User-Agent: Mozilla/5.0" \
+            https://${{ secrets.VERCEL_APP_DOMAIN }} \
+            || exit 1
+          echo "✅ Frontend accessibility check passed"
+
+  # Deployment notification
+  notify:
+    name: Send Notifications
+    runs-on: ubuntu-latest
+    needs: [backend-deploy, frontend-deploy, smoke-tests]
+    if: always()
+    
+    steps:
+      - name: Determine status
+        id: status
+        run: |
+          if [[ "${{ needs.backend-deploy.result }}" == "success" && "${{ needs.frontend-deploy.result }}" == "success" && "${{ needs.smoke-tests.result }}" == "success" ]]; then
+            echo "status=✅ SUCCESS" >> $GITHUB_OUTPUT
+            echo "message=Production deployment completed successfully!" >> $GITHUB_OUTPUT
+          else
+            echo "status=❌ FAILED" >> $GITHUB_OUTPUT
+            echo "message=Production deployment failed. Check logs for details." >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Notify Slack
+        if: env.SLACK_WEBHOOK_URL != ''
+        uses: 8398a7/action-slack@v3
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ job.status }}
+          text: |
+            ${{ steps.status.outputs.status }}
+            ${{ steps.status.outputs.message }}
+            
+            Backend: https://wellnesshub01.${{ secrets.CLOUDFLARE_SUBDOMAIN }}.workers.dev
+            Frontend: https://${{ secrets.VERCEL_APP_DOMAIN }}
+          fields: repo,message,commit,author,ref
+

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { ERRORS } from "@/lib/errors";
 import {
   Activity,
   Bed,
@@ -126,7 +127,7 @@ export default function HealthPage() {
       ]);
 
       if (!metricsRes.ok || !logsRes.ok) {
-        throw new Error("Failed to load health data.");
+        throw new Error(ERRORS.DATA_LOAD_FAILED);
       }
 
       const metricsPayload = (await metricsRes.json()) as unknown;
@@ -138,7 +139,7 @@ export default function HealthPage() {
       setMetrics(metricsData.metrics ?? []);
       setSleepLogs((logsData.logs ?? []).filter((log) => log.type === "sleep"));
     } catch (fetchError) {
-      setError(fetchError instanceof Error ? fetchError.message : "Unable to load health metrics.");
+      setError(fetchError instanceof Error ? fetchError.message : ERRORS.DATA_LOAD_FAILED);
     } finally {
       setIsFetching(false);
     }
@@ -313,7 +314,7 @@ export default function HealthPage() {
       setActiveLogType(null);
       await loadHealthData();
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : "Unable to save metric.");
+      setError(submitError instanceof Error ? submitError.message : ERRORS.DATA_SAVE_FAILED);
     } finally {
       setIsSubmitting(false);
     }

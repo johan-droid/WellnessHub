@@ -1,5 +1,46 @@
-# Backend local worker variables for Wrangler
-# Copy this file to .dev.vars and replace JWT_SECRET with a strong random value.
-JWT_SECRET=replace-with-a-long-random-secret
-CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+# Backend local worker variables for Wrangler/Cloudflare Workers
+# Copy this file to .dev.vars and replace with your own values
+
+# ============ AUTHENTICATION ============
+# Generate using: openssl rand -hex 32
+JWT_SECRET=replace-with-a-long-random-secret-minimum-32-characters
+JWT_EXPIRY=24h
+REFRESH_TOKEN_EXPIRY=7d
+
+# ============ CORS & SECURITY ============
+CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001
+ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+SECURE_HEADERS=true
+
+# ============ ENVIRONMENT ============
 ENVIRONMENT=development
+NODE_ENV=development
+LOG_LEVEL=debug
+
+# ============ DATABASE (D1 - Cloudflare) ============
+# Set in wrangler.jsonc binding configuration
+DB_NAME=wellbeing-db
+
+# ============ RATE LIMITING ============
+RATE_LIMIT_WINDOW=900s
+RATE_LIMIT_MAX_REQUESTS=100
+
+# ============ 2FA & SECURITY ============
+OTP_WINDOW=1
+OTP_STEP=30
+
+# ============ EMAIL (Optional - for password reset) ============
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-specific-password
+EMAIL_FROM=noreply@wellnesshub.local
+
+# ============ MONITORING (Optional) ============
+SENTRY_DSN=
+SENTRY_ENVIRONMENT=development
+
+# ============ API SETTINGS ============
+API_VERSION=v1
+API_TIMEOUT=30000
+API_MAX_BODY_SIZE=1mb

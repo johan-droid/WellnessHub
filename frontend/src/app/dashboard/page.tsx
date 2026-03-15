@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { isMoodLog } from "@/lib/type-guards";
 import {
   Calendar,
   Clock3,
@@ -239,11 +240,11 @@ export default function DashboardPage() {
       .slice(0, 4);
 
     const moodValues = sortedLogs
-      .filter((item) => item.type.toLowerCase() === "mood" && typeof item.rating === "number")
+      .filter(isMoodLog)
       .slice(0, 7)
       .reverse()
       .map((item) => {
-        const value = item.rating as number;
+        const value = item.rating;
         return value <= 5 ? value * 2 : value;
       });
 
