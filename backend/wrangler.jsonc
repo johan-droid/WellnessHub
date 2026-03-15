@@ -28,7 +28,7 @@
     "production": {
       "vars": {
         "ENVIRONMENT": "production",
-        "CORS_ORIGINS": "https://wellness-travel-hub.vercel.app"
+        "CORS_ORIGINS": "https://wellness-hub-five.vercel.app"
       },
       "d1_databases": [
         {
