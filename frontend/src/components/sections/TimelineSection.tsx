@@ -50,7 +50,7 @@ export function TimelineSection() {
             <div className="z-10 bg-budgetGold w-12 h-12 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white font-bold order-1 md:order-2 step-number-active">4</div>
             <RevealWrapper direction="right" className="md:w-5/12 order-2 md:order-3 mt-8 md:mt-0">
               <h4 className="text-budgetGold font-bold text-xl mb-2">04. Remember &amp; Celebrate</h4>
-              <p className="text-gray-600">Capture every moment in your shared gallery. Reflect on your progress and celebrate life's milestones.</p>
+              <p className="text-gray-600">Capture every moment in your shared gallery. Reflect on your progress and celebrate life&apos;s milestones.</p>
             </RevealWrapper>
           </div>
         </div>

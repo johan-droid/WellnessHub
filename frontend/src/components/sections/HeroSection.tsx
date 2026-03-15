@@ -1,4 +1,3 @@
-import { RevealWrapper } from "@/components/ui/RevealWrapper"
 import { Button } from "@/components/ui/Button"
 import { Play, Plane, Activity, Calendar } from "lucide-react"
 

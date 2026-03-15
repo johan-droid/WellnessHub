@@ -1,4 +1,22 @@
 services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8787:8787"
+    environment:
+      - NODE_ENV=development
+      - PORT=8787
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "-", "http://localhost:8787/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
   frontend:
     build:
       context: ./frontend
@@ -10,14 +28,5 @@ services:
       - NEXT_PUBLIC_API_URL=http://localhost:8787
       - NODE_ENV=development
     depends_on:
-      - backend
-
-  backend:
-    build:
-      context: ./backend
-    ports:
-      - "8787:8787"
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
-    # wrangler dev needs local volumes or persistence for D1 local db
+      backend:
+        condition: service_healthy

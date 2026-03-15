@@ -37,7 +37,7 @@ export function StatsTestimonialsSection() {
               ))}
             </div>
             <p className="text-xl italic leading-relaxed mb-8">
-              "WellnessHub completely changed how we plan our lives. Being able to see how my cycle impacts our travel energy levels made our honeymoon so much more enjoyable!"
+              &ldquo;WellnessHub completely changed how we plan our lives. Being able to see how my cycle impacts our travel energy levels made our honeymoon so much more enjoyable!&rdquo;
             </p>
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-full bg-gradient-to-br from-wellnessPink to-travelTeal" />

@@ -1,12 +1,14 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useCallback, useContext, useState, useEffect } from "react";
 
 interface User {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
+  profilePicture?: string | null;
+  bio?: string | null;
   createdAt: number;
 }
 
@@ -15,7 +17,22 @@ interface AuthContextType {
   token: string | null;
   login: (token: string, user: User) => void;
   logout: () => void;
+  refreshUser: () => Promise<void>;
   loading: boolean;
+}
+
+type ApiEnvelope<T> = {
+  success?: boolean;
+  data?: T;
+  error?: string;
+};
+
+function unwrapData<T>(payload: unknown): T {
+  const maybeEnvelope = payload as ApiEnvelope<T>;
+  if (maybeEnvelope && typeof maybeEnvelope === "object" && "data" in maybeEnvelope) {
+    return maybeEnvelope.data as T;
+  }
+  return payload as T;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,26 +42,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Check local storage for token on mount
-    const storedToken = localStorage.getItem("auth_token");
-    if (storedToken) {
-      setToken(storedToken);
-      fetchUser(storedToken);
-    } else {
-      setLoading(false);
-    }
-  }, []);
-
-  const fetchUser = async (t: string) => {
+  const fetchUser = useCallback(async (t: string) => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
       const res = await fetch(`${apiUrl}/api/protected/me`, {
         headers: { Authorization: `Bearer ${t}` },
       });
       if (res.ok) {
-        const data = await res.json();
-        setUser(data.user);
+        const payload = (await res.json()) as unknown;
+        const data = unwrapData<{ user?: User }>(payload);
+        if (data.user) {
+          setUser(data.user);
+        } else {
+          logout();
+        }
       } else {
         logout(); // Token invalid
       }
@@ -53,7 +64,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    // Check local storage for token on mount
+    const storedToken = localStorage.getItem("auth_token");
+    if (storedToken) {
+      setToken(storedToken);
+      void fetchUser(storedToken);
+    } else {
+      setLoading(false);
+    }
+  }, [fetchUser]);
 
   const login = (t: string, u: User) => {
     localStorage.setItem("auth_token", t);
@@ -67,8 +89,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
   };
 
+  const refreshUser = useCallback(async () => {
+    if (!token) {
+      return;
+    }
+    await fetchUser(token);
+  }, [fetchUser, token]);
+
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, token, login, logout, refreshUser, loading }}>
       {children}
     </AuthContext.Provider>
   );

@@ -7,6 +7,27 @@ import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import { ArrowLeft, Loader2 } from "lucide-react";
 
+type ApiEnvelope<T> = {
+  success?: boolean;
+  data?: T;
+  error?: string;
+};
+
+function unwrapData<T>(payload: unknown): T {
+  const maybeEnvelope = payload as ApiEnvelope<T>;
+  if (maybeEnvelope && typeof maybeEnvelope === "object" && "data" in maybeEnvelope) {
+    return maybeEnvelope.data as T;
+  }
+  return payload as T;
+}
+
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return "Something went wrong. Please try again.";
+}
+
 export default function RegisterPage() {
   const [formData, setFormData] = useState({ firstName: "", lastName: "", email: "", password: "" });
   const [error, setError] = useState("");
@@ -27,10 +48,16 @@ export default function RegisterPage() {
         body: JSON.stringify(formData),
       });
 
-      const data = await res.json();
+      const payload = (await res.json()) as unknown;
+      const data = unwrapData<{ token?: string }>(payload);
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to register");
+        const envelope = payload as ApiEnvelope<{ token?: string }>;
+        throw new Error(envelope.error || "Failed to register");
+      }
+
+      if (!data.token) {
+        throw new Error("Authentication token was not returned.");
       }
 
       // Fetch user data right after getting token
@@ -38,17 +65,18 @@ export default function RegisterPage() {
         headers: { Authorization: `Bearer ${data.token}` },
       });
       
-      const userData = await userRes.json();
+      const userPayload = (await userRes.json()) as unknown;
+      const userData = unwrapData<{ user?: { id: string; email: string; firstName: string; lastName: string; createdAt: number } }>(userPayload);
       
-      if (userRes.ok) {
+      if (userRes.ok && userData.user) {
         login(data.token, userData.user);
         router.push("/dashboard");
       } else {
         throw new Error("Failed to fetch user profile");
       }
       
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setIsLoading(false);
     }

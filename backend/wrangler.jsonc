@@ -3,37 +3,45 @@
   "name": "backend",
   "main": "src/index.ts",
   "compatibility_date": "2026-03-15",
-   "compatibility_flags": [
-     "nodejs_compat"
-   ],
-  // "vars": {
-  //   "MY_VAR": "my-variable"
-  // },
-  // "kv_namespaces": [
-  //   {
-  //     "binding": "MY_KV_NAMESPACE",
-  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  //   }
-  // ],
-  // "r2_buckets": [
-  //   {
-  //     "binding": "MY_BUCKET",
-  //     "bucket_name": "my-bucket"
-  //   }
-  // ],
-   "d1_databases": [
-     {
-       "binding": "DB",
-       "database_name": "wellness-hub-db",
-       "database_id": "local-dev-db",
-       "migrations_dir": "drizzle"
-     }
-   ],
-  // "ai": {
-  //   "binding": "AI"
-  // },
-  // "observability": {
-  //   "enabled": true,
-  //   "head_sampling_rate": 1
-  // }
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "env": {
+    "development": {
+      "vars": {
+        "ENVIRONMENT": "development",
+        "CORS_ORIGINS": "http://localhost:3000"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "wellness-hub-db",
+          "database_id": "local-dev-db",
+          "migrations_dir": "drizzle"
+        }
+      ],
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1
+      }
+    },
+    "production": {
+      "vars": {
+        "ENVIRONMENT": "production",
+        "CORS_ORIGINS": "https://wellness-travel-hub.vercel.app"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "wellness-hub-db",
+          "database_id": "prod-db-id",
+          "migrations_dir": "drizzle"
+        }
+      ],
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1
+      }
+    }
+  }
 }

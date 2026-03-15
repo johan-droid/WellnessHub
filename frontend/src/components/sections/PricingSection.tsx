@@ -10,7 +10,7 @@ export function PricingSection() {
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-display font-bold mb-6">All Features Are Now Free</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              We've opened up our entire suite of wellness and adventure tools for everyone. Start your journey today, no subscription required.
+              We&apos;ve opened up our entire suite of wellness and adventure tools for everyone. Start your journey today, no subscription required.
             </p>
           </div>
         </RevealWrapper>

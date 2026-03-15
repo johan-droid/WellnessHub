@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="160" viewBox="0 0 320 160" role="img" aria-label="Empty trips">
+  <rect width="320" height="160" fill="#f7f7f7" />
+  <text x="160" y="84" text-anchor="middle" fill="#666" font-family="Arial" font-size="16">No trips yet</text>
+</svg>

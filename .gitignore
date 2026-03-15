@@ -16,6 +16,14 @@ Thumbs.db
 .env.test.local
 .env.production.local
 *.env*
+!.env.example
+!.dev.vars.example
+
+# Vercel
+.vercel/
+
+# Cloudflare Wrangler local secrets
+.dev.vars
 
 # Build and cache
 .next/
