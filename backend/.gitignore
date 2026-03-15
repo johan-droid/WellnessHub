@@ -1,0 +1,22 @@
+# dependencies
+node_modules/
+.wrangler/
+
+# build
+dist/
+
+# dev environment
+.env
+.dev.vars
+
+# drizzle
+drizzle/migrations/
+
+# logs
+*.log
+npm-debug.log*
+
+# misc
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Wellness &amp; Travel Adventure Hub | Live Fully. Travel Boldly.</title>
+<!-- Google Fonts: Inter and Poppins -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Poppins:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            wellnessPink: '#FF69B4',
+            travelTeal: '#1D9E75',
+            memoryPurple: '#9966CC',
+            budgetGold: '#FFD700',
+            deepNavy: '#1A2F4B',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Poppins', 'sans-serif'],
+          },
+          backgroundImage: {
+            'hero-gradient': 'linear-gradient(45deg, #FF69B4, #9966CC, #1D9E75)',
+            'cta-gradient': 'linear-gradient(to right, #1D9E75, #FF69B4)',
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+            'float': 'float 6s ease-in-out infinite',
+            'gradient-move': 'gradientBG 15s ease infinite',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-20px)' },
+            },
+            gradientBG: {
+              '0%': { 'background-position': '0% 50%' },
+              '50%': { 'background-position': '100% 50%' },
+              '100%': { 'background-position': '0% 50%' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom Styles -->
+<style data-purpose="custom-animations">
+    .animate-delay-100 { animation-delay: 100ms; }
+    .animate-delay-200 { animation-delay: 200ms; }
+    .animate-delay-300 { animation-delay: 300ms; }
+    
+    .gradient-bg-animate {
+      background-size: 200% 200%;
+      animation: gradientBG 15s ease-in-out infinite;
+    }
+
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .soft-glow {
+      box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .soft-glow:hover {
+      box-shadow: 0 0 35px rgba(255, 105, 180, 0.5);
+    }
+
+    .feature-card {
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px) scale(1.02);
+    }
+
+    @keyframes smoothFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-25px) rotate(2deg); }
+    }
+
+    .float-elegant {
+      animation: smoothFloat 8s ease-in-out infinite;
+    }
+
+    @keyframes fmotionEntry {
+      0% { opacity: 0; transform: translateY(30px) scale(0.98); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .framer-entry {
+      animation: fmotionEntry 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  
+    @keyframes drawLine {
+      0% { transform: scaleY(0); transform-origin: top; }
+      100% { transform: scaleY(1); transform-origin: top; }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 105, 180, 0.4); }
+      50% { box-shadow: 0 0 20px 10px rgba(255, 105, 180, 0.2); }
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .timeline-line-grow {
+      animation: drawLine linear forwards;
+      animation-timeline: view();
+      animation-range: entry 10% exit 90%;
+    }
+
+    .step-number-active {
+      animation: pulseGlow 3s infinite;
+    }
+
+    .reveal-left { opacity: 0; }
+    .reveal-right { opacity: 0; }
+
+    .reveal-active {
+      animation: 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .reveal-left.reveal-active { animation-name: slideInLeft; }
+    .reveal-right.reveal-active { animation-name: slideInRight; }
+
+    .timeline-float { animation: smoothFloat 10s ease-in-out infinite; }
+    </style>
+</head>
+<body class="bg-white font-sans text-deepNavy overflow-x-hidden">
+<!-- BEGIN: Navigation -->
+<nav class="fixed top-0 w-full z-50 sticky-nav py-4 px-6 lg:px-12 flex justify-between items-center bg-transparent" id="navbar">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 bg-wellnessPink rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-[0_0_15px_rgba(255,105,180,0.5)]">W</div>
+<span class="font-display font-bold text-xl tracking-tight text-deepNavy">WellnessHub</span>
+</div>
+<div class="hidden md:flex items-center gap-8 font-medium">
+<a class="hover:text-travelTeal transition-colors" href="#features">Features</a>
+<a class="hover:text-travelTeal transition-colors" href="#how-it-works">How It Works</a>
+<a class="hover:text-travelTeal transition-colors" href="#pricing">Pricing</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-6 py-2 rounded-full font-semibold hover:bg-gray-100 transition-all">Login</button>
+<button class="px-6 py-2 bg-deepNavy text-white rounded-full font-semibold hover:scale-105 transition-all shadow-md">Get Started</button>
+</div>
+</nav>
+<!-- END: Navigation -->
+<!-- BEGIN: Hero Section -->
+<section class="relative min-h-screen flex items-center pt-20 overflow-hidden bg-hero-gradient gradient-bg-animate" style="background: linear-gradient(135deg, #FFB6C1 0%, #FF69B4 30%, #9966CC 70%, #87CEEB 100%);">
+<!-- Decorative Shapes -->
+<div class="absolute top-20 left-10 w-64 h-64 bg-white/20 rounded-full blur-3xl float-elegant"></div>
+<div class="absolute bottom-20 right-10 w-96 h-96 bg-travelTeal/30 rounded-full blur-3xl float-elegant" style="animation-delay: 2s;"></div>
+<div class="container mx-auto px-6 lg:px-12 grid lg:grid-cols-2 gap-12 items-center relative z-10">
+<div class="text-white space-y-8 framer-entry">
+<!-- Social Proof Badge -->
+<div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/30 text-sm font-medium">
+<span class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-white bg-gray-300"></div>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-gray-400"></div>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-gray-500"></div>
+</span>
+          Trusted by 50,000+ happy couples
+        </div>
+<h1 class="text-5xl lg:text-7xl font-display font-extrabold leading-tight">All Features Are Now Free.<br/><span class="text-white drop-shadow-sm">Live Fully. <span class="text-pink-100">Together.</span></span></h1>
+<p class="text-xl opacity-90 max-w-xl">
+          Your all-in-one companion for wellness, adventure, and cherished moments together. Sync your health and your travels in one beautiful space.
+        </p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="px-8 py-4 bg-white text-deepNavy rounded-2xl font-bold text-lg shadow-xl hover:scale-105 transition-all soft-glow">Start Your Journey</button>
+<button class="px-8 py-4 glass-effect text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-white/30 transition-all">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+            Watch Demo
+          </button>
+</div>
+</div>
+<!-- Hero Illustration Placeholder -->
+<div class="relative hidden lg:block animate-delay-200 framer-entry">
+<div class="relative w-full aspect-square flex items-center justify-center">
+<div class="w-[450px] h-[550px] bg-white rounded-[3rem] shadow-2xl overflow-hidden relative p-8">
+<!-- Mock UI Elements -->
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<div class="w-12 h-12 bg-wellnessPink/20 rounded-xl flex items-center justify-center text-wellnessPink">❤️</div>
+<div class="h-4 w-32 bg-gray-100 rounded-full"></div>
+</div>
+<div class="h-40 bg-gradient-to-br from-travelTeal/10 to-memoryPurple/10 rounded-2xl border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-400">
+                  Interactive Calendar View
+                </div>
+<div class="grid grid-cols-2 gap-4">
+<div class="h-24 bg-travelTeal/5 rounded-2xl p-4">
+<div class="text-xs font-bold text-travelTeal uppercase">Next Flight</div>
+<div class="text-lg font-bold">Paris, FR</div>
+</div>
+<div class="h-24 bg-wellnessPink/5 rounded-2xl p-4">
+<div class="text-xs font-bold text-wellnessPink uppercase">Cycle Day</div>
+<div class="text-lg font-bold">Day 14</div>
+</div>
+</div>
+<div class="h-32 bg-deepNavy rounded-2xl p-4 text-white">
+<div class="text-xs font-medium opacity-60">Adventure Goal</div>
+<div class="mt-2 h-2 w-full bg-white/20 rounded-full overflow-hidden">
+<div class="h-full bg-budgetGold w-3/4"></div>
+</div>
+<div class="mt-4 flex justify-between items-center">
+<span class="text-sm">75% of Bucket List</span>
+<span class="text-budgetGold font-bold">Keep going!</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Icons -->
+<div class="absolute top-10 right-0 bg-white p-4 rounded-2xl shadow-xl float-elegant" style="animation-delay: 1s;">
+<span class="text-3xl">✈️</span>
+</div>
+<div class="absolute bottom-10 left-0 bg-white p-4 rounded-2xl shadow-xl float-elegant" style="animation-delay: 3s;">
+<span class="text-3xl">🧘‍♀️</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Hero Section -->
+<!-- BEGIN: Features Showcase -->
+<section class="py-24 bg-gray-50" id="features">
+<div class="container mx-auto px-6 lg:px-12">
+<div class="text-center max-w-3xl mx-auto mb-20">
+<h2 class="text-4xl lg:text-5xl font-display font-bold mb-6">Designed for Your Lifestyle</h2>
+<p class="text-xl text-gray-600">Everything you need to manage your health and plan your next big escape, all synced in one intuitive platform.</p>
+</div>
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Feature 1 -->
+<div class="feature-card bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 transition-all group rounded-3xl soft-glow framer-entry">
+<div class="w-14 h-14 bg-wellnessPink/10 rounded-2xl flex items-center justify-center text-wellnessPink mb-6 group-hover:bg-wellnessPink group-hover:text-white transition-colors">
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<h3 class="text-2xl font-bold mb-3">Period Tracking</h3>
+<p class="text-gray-600">Precision tracking for your menstrual cycle with intelligent predictions and health insights.</p>
+</div>
+<!-- Feature 2 -->
+<div class="feature-card bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 transition-all group rounded-3xl soft-glow framer-entry">
+<div class="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-500 mb-6 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<h3 class="text-2xl font-bold mb-3">Symptom Logging</h3>
+<p class="text-gray-600">Understand your body better by logging moods, energy levels, and physical symptoms daily.</p>
+</div>
+<!-- Feature 3 -->
+<div class="feature-card bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 transition-all group rounded-3xl soft-glow framer-entry">
+<div class="w-14 h-14 bg-travelTeal/10 rounded-2xl flex items-center justify-center text-travelTeal mb-6 group-hover:bg-travelTeal group-hover:text-white transition-colors">
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h1.5a2.5 2.5 0 012.5 2.5V14M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<h3 class="text-2xl font-bold mb-3">Trip Planning</h3>
+<p class="text-gray-600">Collaborative itineraries that keep everyone on the same page for your next adventure.</p>
+</div>
+<!-- Feature 4 -->
+<div class="feature-card bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 transition-all group rounded-3xl soft-glow framer-entry">
+<div class="w-14 h-14 bg-memoryPurple/10 rounded-2xl flex items-center justify-center text-memoryPurple mb-6 group-hover:bg-memoryPurple group-hover:text-white transition-colors">
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<h3 class="text-2xl font-bold mb-3">Bucket List</h3>
+<p class="text-gray-600">Dream big and track your progress through life's most exciting experiences together.</p>
+</div>
+<!-- Feature 5 -->
+<div class="feature-card bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 transition-all group rounded-3xl soft-glow framer-entry">
+<div class="w-14 h-14 bg-budgetGold/10 rounded-2xl flex items-center justify-center text-budgetGold mb-6 group-hover:bg-budgetGold group-hover:text-white transition-colors">
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<h3 class="text-2xl font-bold mb-3">Memory Gallery</h3>
+<p class="text-gray-600">Store photos and notes from your travels in a private, shared space for your eyes only.</p>
+</div>
+<!-- Feature 6 -->
+<div class="feature-card bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 transition-all group rounded-3xl soft-glow framer-entry">
+<div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center text-green-600 mb-6 group-hover:bg-green-600 group-hover:text-white transition-colors">
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<h3 class="text-2xl font-bold mb-3">Budget Management</h3>
+<p class="text-gray-600">Split costs easily and track expenses to stay within your travel budget without stress.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Features Showcase -->
+<!-- BEGIN: How It Works -->
+<section class="py-24 bg-white relative overflow-hidden" id="how-it-works">
+<div class="container mx-auto px-6 lg:px-12">
+<div class="text-center mb-20">
+<h2 class="text-4xl font-display font-bold">Your Path to Better Living</h2>
+</div>
+<div class="relative max-w-4xl mx-auto">
+<!-- Vertical Line -->
+<div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-wellnessPink via-memoryPurple to-travelTeal hidden md:block timeline-line-grow"></div>
+<!-- Step 1 -->
+<div class="relative flex items-center justify-between mb-24 md:flex-row flex-col text-center md:text-left timeline-float">
+<div class="md:w-5/12 order-2 md:order-1 mt-8 md:mt-0 reveal-left">
+<h4 class="text-wellnessPink font-bold text-xl mb-2">01. Connect &amp; Setup</h4>
+<p class="text-gray-600">Download the app and invite your partner. Link your calendars and health apps to get everything in one place.</p>
+</div>
+<div class="z-10 bg-wellnessPink w-12 h-12 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white font-bold order-1 md:order-2 step-number-active">1</div>
+<div class="md:w-5/12 order-3"></div>
+</div>
+<!-- Step 2 -->
+<div class="relative flex items-center justify-between mb-24 md:flex-row flex-col text-center md:text-right timeline-float">
+<div class="md:w-5/12 order-3 md:order-1"></div>
+<div class="z-10 bg-memoryPurple w-12 h-12 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white font-bold order-1 md:order-2 step-number-active">2</div>
+<div class="md:w-5/12 order-2 md:order-3 mt-8 md:mt-0 reveal-left reveal-right">
+<h4 class="text-memoryPurple font-bold text-xl mb-2">02. Track &amp; Discover</h4>
+<p class="text-gray-600">Start logging your wellness patterns. Our AI learns your rhythms to suggest the best times for rest or adventure.</p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="relative flex items-center justify-between mb-24 md:flex-row flex-col text-center md:text-left timeline-float">
+<div class="md:w-5/12 order-2 md:order-1 mt-8 md:mt-0 reveal-left">
+<h4 class="text-travelTeal font-bold text-xl mb-2">03. Plan &amp; Dream</h4>
+<p class="text-gray-600">Use our collaborative tools to build itineraries, manage budgets, and tick off your bucket list items together.</p>
+</div>
+<div class="z-10 bg-travelTeal w-12 h-12 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white font-bold order-1 md:order-2 step-number-active">3</div>
+<div class="md:w-5/12 order-3"></div>
+</div>
+<!-- Step 4 -->
+<div class="relative flex items-center justify-between md:flex-row flex-col text-center md:text-right timeline-float">
+<div class="md:w-5/12 order-3 md:order-1"></div>
+<div class="z-10 bg-budgetGold w-12 h-12 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white font-bold order-1 md:order-2 step-number-active">4</div>
+<div class="md:w-5/12 order-2 md:order-3 mt-8 md:mt-0 reveal-left reveal-right">
+<h4 class="text-budgetGold font-bold text-xl mb-2">04. Remember &amp; Celebrate</h4>
+<p class="text-gray-600">Capture every moment in your shared gallery. Reflect on your progress and celebrate life's milestones.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: How It Works -->
+<!-- BEGIN: Stats & Testimonials -->
+<section class="py-24 bg-deepNavy text-white overflow-hidden">
+<div class="container mx-auto px-6 lg:px-12 grid lg:grid-cols-2 gap-16 items-center">
+<!-- Stats -->
+<div>
+<h2 class="text-4xl font-display font-bold mb-12">Growing Every Day</h2>
+<div class="grid grid-cols-2 gap-8">
+<div>
+<div class="text-5xl font-bold text-wellnessPink mb-2">50K+</div>
+<p class="text-white/60 text-lg">Active Users</p>
+</div>
+<div>
+<div class="text-5xl font-bold text-travelTeal mb-2">2M+</div>
+<p class="text-white/60 text-lg">Cycles Tracked</p>
+</div>
+<div>
+<div class="text-5xl font-bold text-memoryPurple mb-2">150+</div>
+<p class="text-white/60 text-lg">Countries Explored</p>
+</div>
+<div>
+<div class="text-5xl font-bold text-budgetGold mb-2">4.9/5</div>
+<p class="text-white/60 text-lg">App Store Rating</p>
+</div>
+</div>
+</div>
+<!-- Testimonials -->
+<div class="relative">
+<div class="bg-white/5 border border-white/10 p-10 rounded-[2.5rem] backdrop-blur-sm">
+<div class="flex gap-1 text-budgetGold mb-6">
+<svg class="w-6 h-6 fill-current" viewbox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+<svg class="w-6 h-6 fill-current" viewbox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+<svg class="w-6 h-6 fill-current" viewbox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+<svg class="w-6 h-6 fill-current" viewbox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+<svg class="w-6 h-6 fill-current" viewbox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+</div>
+<p class="text-xl italic leading-relaxed mb-8">
+            "WellnessHub completely changed how we plan our lives. Being able to see how my cycle impacts our travel energy levels made our honeymoon so much more enjoyable!"
+          </p>
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-full bg-gradient-to-br from-wellnessPink to-travelTeal"></div>
+<div>
+<div class="font-bold">Sarah &amp; James</div>
+<div class="text-white/60 text-sm">Members since 2022</div>
+</div>
+</div>
+</div>
+<!-- Simple Carousel Nav -->
+<div class="flex gap-2 mt-6 justify-end">
+<button class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10">←</button>
+<button class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10">→</button>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Stats & Testimonials -->
+<!-- BEGIN: Pricing Section -->
+<section class="py-24 bg-gray-50" id="pricing">
+<div class="container mx-auto px-6 lg:px-12">
+<div class="text-center mb-16"><h2 class="text-4xl lg:text-5xl font-display font-bold mb-6">All Features Are Now Free</h2><p class="text-xl text-gray-600 max-w-2xl mx-auto">We've opened up our entire suite of wellness and adventure tools for everyone. Start your journey today, no subscription required.</p></div>
+<div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+<!-- Essential Journey -->
+<div class="bg-white p-10 rounded-3xl border border-gray-100 flex flex-col transition-all hover:shadow-xl">
+<div class="mb-8">
+<h3 class="text-xl font-bold mb-2 text-deepNavy">Essential Journey</h3>
+<p class="text-travelTeal text-xs font-semibold uppercase tracking-wider">Base Camp Tools</p>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-center gap-2">✅ Basic Cycle Tracking</li>
+<li class="flex items-center gap-2">✅ 1 Shared Trip Planner</li>
+<li class="flex items-center gap-2">✅ Public Bucket List</li>
+<li class="flex items-center gap-2">✅ Global Community Access</li>
+</ul>
+<button class="w-full py-4 border-2 border-deepNavy rounded-2xl font-bold hover:bg-deepNavy hover:text-white transition-all">Get Started for Free</button>
+</div>
+<!-- Soul Nourishment -->
+<div class="bg-white p-10 rounded-3xl border-2 border-wellnessPink shadow-2xl relative flex flex-col scale-105 soft-glow">
+<div class="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-wellnessPink text-white px-6 py-1 rounded-full text-sm font-bold uppercase tracking-widest">Included for All</div>
+<div class="mb-8">
+<h3 class="text-xl font-bold mb-2 text-deepNavy">Soul Nourishment</h3>
+<p class="text-wellnessPink text-xs font-semibold uppercase tracking-wider">Full Wellness Suite</p>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-center gap-2 font-medium">✅ Advanced Health &amp; Mood Analytics</li>
+<li class="flex items-center gap-2 font-medium">✅ Daily Guided Meditations &amp; Yoga</li>
+<li class="flex items-center gap-2 font-medium">✅ Smart Travel Forecasts</li>
+<li class="flex items-center gap-2 font-medium">✅ Priority 24/7 Support</li>
+</ul>
+<button class="w-full py-4 bg-gradient-to-r from-travelTeal to-wellnessPink text-white rounded-2xl font-bold hover:shadow-lg hover:opacity-90 transition-all soft-glow">Get Started for Free</button>
+</div>
+<!-- Global Exploration -->
+<div class="bg-white p-10 rounded-3xl border border-gray-100 flex flex-col transition-all hover:shadow-xl">
+<div class="mb-8">
+<h3 class="text-xl font-bold mb-2 text-deepNavy">Global Exploration</h3>
+<p class="text-memoryPurple text-xs font-semibold uppercase tracking-wider">Premium Adventure</p>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-center gap-2">✅ Global Travel AI Personal Guide</li>
+<li class="flex items-center gap-2">✅ Exclusive Member Global Events</li>
+<li class="flex items-center gap-2">✅ 1:1 Adventure &amp; Life Coaching</li>
+<li class="flex items-center gap-2">✅ Unlimited Memory Storage</li>
+</ul>
+<button class="w-full py-4 border-2 border-deepNavy rounded-2xl font-bold hover:bg-deepNavy hover:text-white transition-all">Get Started for Free</button>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Pricing Section -->
+<!-- BEGIN: CTA Section -->
+<section class="py-24 px-6">
+<div class="max-w-6xl mx-auto bg-cta-gradient rounded-[3rem] p-12 lg:p-24 text-center text-white relative overflow-hidden shadow-2xl rounded-3xl" style="background: linear-gradient(to right, #FF69B4, #9966CC);">
+<div class="relative z-10">
+<h2 class="text-4xl lg:text-6xl font-display font-bold mb-8">Ready to Transform Your Wellness &amp; Travel Story?</h2>
+<p class="text-xl opacity-90 mb-12 max-w-2xl mx-auto">Join thousands of people living their best, most organized, and adventurous lives today.</p>
+<button class="px-12 py-5 bg-white text-deepNavy rounded-2xl font-extrabold text-xl shadow-xl hover:scale-105 transition-all soft-glow">Start Free Today</button>
+<p class="mt-6 text-sm opacity-70">No credit card required. Cancel anytime.</p>
+</div>
+<!-- Decorative circles -->
+<div class="absolute -bottom-20 -left-20 w-80 h-80 bg-white/10 rounded-full"></div>
+<div class="absolute -top-20 -right-20 w-80 h-80 bg-white/10 rounded-full"></div>
+</div>
+</section>
+<!-- END: CTA Section -->
+<!-- BEGIN: Footer -->
+<footer class="bg-deepNavy text-white pt-24 pb-12">
+<div class="container mx-auto px-6 lg:px-12">
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+<div class="space-y-6">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-wellnessPink rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-[0_0_15px_rgba(255,105,180,0.5)]">W</div>
+<span class="font-display font-bold text-xl tracking-tight">WellnessHub</span>
+</div>
+<p class="text-white/60">Empowering couples to live healthier, travel further, and remember more together.</p>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-travelTeal transition-colors" href="#">FB</a>
+<a class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-travelTeal transition-colors" href="#">IG</a>
+<a class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-travelTeal transition-colors" href="#">TW</a>
+</div>
+</div>
+<div>
+<h4 class="font-bold mb-6">Product</h4>
+<ul class="space-y-4 text-white/60">
+<li><a class="hover:text-white transition-colors" href="#">Health Tracking</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Travel Planning</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Shared Gallery</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Premium Features</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-6">Company</h4>
+<ul class="space-y-4 text-white/60">
+<li><a class="hover:text-white transition-colors" href="#">About Us</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Our Mission</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Careers</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Blog</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-6">Stay Updated</h4>
+<p class="text-white/60 mb-4 text-sm">Get travel tips and wellness advice in your inbox.</p>
+<form class="flex gap-2">
+<input class="bg-white/5 border border-white/10 rounded-xl px-4 py-2 w-full focus:outline-none focus:border-travelTeal" placeholder="Email address" type="email"/>
+<button class="w-14 h-8 bg-wellnessPink rounded-full relative p-1 transition-all">→</button>
+</form>
+</div>
+</div>
+<div class="pt-12 border-t border-white/10 flex flex-col md:row justify-between items-center gap-4 text-white/40 text-sm">
+<p>© 2024 Wellness &amp; Travel Adventure Hub. All rights reserved.</p>
+<div class="flex gap-8">
+<a class="hover:text-white transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-white transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-white transition-colors" href="#">Cookie Policy</a>
+</div>
+</div>
+</div>
+</footer>
+<!-- END: Footer -->
+<!-- BEGIN: Interactive Scripts -->
+<script data-purpose="nav-scroll">
+    window.addEventListener('scroll', function() {
+      const nav = document.getElementById('navbar');
+      if (window.scrollY > 50) {
+        nav.classList.add('bg-white', 'shadow-md', 'py-3');
+        nav.classList.remove('bg-transparent', 'py-4', 'text-white');
+        nav.querySelectorAll('a').forEach(a => a.classList.add('text-deepNavy'));
+      } else {
+        nav.classList.remove('bg-white', 'shadow-md', 'py-3');
+        nav.classList.add('bg-transparent', 'py-4');
+        // Hero is dark, but text is white on gradient
+        // If logo needs color change, handle here
+      }
+    });
+  </script>
+<!-- END: Interactive Scripts -->
+<script>
+    const observerOptions = {
+      threshold: 0.2
+    };
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('reveal-active');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal-left, .reveal-right').forEach(el => {
+      revealObserver.observe(el);
+    });
+  </script></body></html>
