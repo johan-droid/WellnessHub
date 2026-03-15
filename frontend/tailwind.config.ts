@@ -10,10 +10,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        wellnessPink: '#FF69B4',
-        travelTeal: '#1D9E75',
-        memoryPurple: '#9966CC',
-        budgetGold: '#FFD700',
+        wellnessPink: '#FF85B8', // Softer Pink
+        wellnessLavender: '#E6E6FA',
+        wellnessRose: '#FFD1DC',
+        travelTeal: '#4FD1C5', // Softer Teal
+        memoryPurple: '#B19CD9', // Light Lavender
+        budgetGold: '#F0E68C', // Khaki/Soft Gold
         deepNavy: '#1A2F4B',
       },
       fontFamily: {

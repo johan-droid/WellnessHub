@@ -55,29 +55,36 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section className="py-24 bg-gray-50" id="features">
-      <div className="container mx-auto px-6 lg:px-12">
+    <section className="relative py-32 bg-white" id="features">
+      {/* Ambient background glow */}
+      <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-wellnessRose/20 blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-wellnessLavender/20 blur-[120px] pointer-events-none"></div>
+
+      <div className="container mx-auto px-6 lg:px-12 relative z-10">
         <RevealWrapper direction="up">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-4xl lg:text-5xl font-display font-bold mb-6">Designed for Your Lifestyle</h2>
-            <p className="text-xl text-gray-600">
-              Everything you need to manage your health and plan your next big escape, all synced in one intuitive platform.
+            <h2 className="text-4xl lg:text-6xl font-display font-bold mb-6 text-deepNavy">Designed for Your Radiance</h2>
+            <p className="text-xl text-deepNavy/60">
+              A gentle, intuitive platform where your wellness and wanders meet. Softly synced, beautifully tracked.
             </p>
           </div>
         </RevealWrapper>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
           {features.map((feature, idx) => (
             <RevealWrapper key={idx} direction="up" delay={idx * 0.1}>
               <Card 
-                className="feature-card animate-smooth-float group h-full hover:shadow-2xl hover:-translate-y-4 transition-all duration-500"
-                style={{ animationDelay: `${idx * 1.2}s`, animationDuration: `${6 + (idx % 3)}s` }}
+                className="feature-card animate-smooth-float group h-full hover:shadow-[0_20px_60px_-15px_rgba(255,133,184,0.3)] hover:-translate-y-6 transition-all duration-700 bg-white/60 backdrop-blur-sm border-white/50"
+                style={{ 
+                  animationDelay: `${idx * 0.4}s`, 
+                  animationDuration: `${5 + (idx % 2)}s` 
+                }}
               >
-                <div className={`w-14 h-14 ${feature.bgClass} rounded-2xl flex items-center justify-center ${feature.colorClass} mb-6 ${feature.hoverBgClass} transition-colors group-hover:scale-110 duration-300`}>
+                <div className={`w-16 h-16 ${feature.bgClass} rounded-[1.5rem] flex items-center justify-center ${feature.colorClass} mb-8 ${feature.hoverBgClass} transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-sm`}>
                   <feature.icon className="w-8 h-8" />
                 </div>
-                <h3 className="text-2xl font-bold mb-3">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <h3 className="text-2xl font-bold mb-4 text-deepNavy">{feature.title}</h3>
+                <p className="text-deepNavy/60 leading-relaxed">{feature.description}</p>
               </Card>
             </RevealWrapper>
           ))}

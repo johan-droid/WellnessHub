@@ -19,54 +19,66 @@ export function Navbar() {
   }, [])
 
   return (
-    <nav 
-      className={`fixed top-0 w-full z-50 transition-all duration-300 px-6 lg:px-12 flex justify-between items-center ${
-        scrolled ? "bg-white shadow-md py-3 text-deepNavy" : "bg-transparent py-4 text-white"
-      }`}
-    >
-      <div className="flex items-center gap-2">
-        <div className="w-10 h-10 bg-wellnessPink rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-[0_0_15px_rgba(255,105,180,0.5)]">
-          W
+    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 w-[95%] max-w-6xl">
+      <div className={`
+        flex justify-between items-center px-8 py-3 rounded-full border border-white/40 
+        transition-all duration-500 backdrop-blur-xl
+        ${scrolled 
+          ? "bg-white/70 shadow-[0_10px_40px_-10px_rgba(255,133,184,0.3)] border-wellnessPink/20" 
+          : "bg-white/40 shadow-xl border-white/50"
+        }
+      `}>
+        {/* Logo */}
+        <div className="flex items-center gap-2">
+          <div className="w-9 h-9 bg-wellnessPink rounded-full flex items-center justify-center text-white font-bold text-lg shadow-sm shadow-wellnessPink/30">
+            W
+          </div>
+          <span className="font-display font-bold text-lg tracking-tight text-deepNavy">
+            WellnessHub
+          </span>
         </div>
-        <span className="font-display font-bold text-xl tracking-tight">
-          WellnessHub
-        </span>
-      </div>
-      
-      <div className="hidden md:flex items-center gap-8 font-medium">
-        <a className="hover:text-travelTeal transition-colors" href="#features">Features</a>
-        <a className="hover:text-travelTeal transition-colors" href="#how-it-works">How It Works</a>
-        <a className="hover:text-travelTeal transition-colors" href="#pricing">Pricing</a>
-      </div>
+        
+        {/* Nav Links in their own bubble/tab area */}
+        <div className="hidden md:flex items-center gap-1 p-1 bg-white/30 rounded-full border border-white/20 backdrop-blur-md">
+          <Link href="#features" className="px-5 py-2 rounded-full text-sm font-medium text-deepNavy/70 hover:text-deepNavy hover:bg-white/50 transition-all duration-300">
+            Features
+          </Link>
+          <Link href="#how-it-works" className="px-5 py-2 rounded-full text-sm font-medium text-deepNavy/70 hover:text-deepNavy hover:bg-white/50 transition-all duration-300">
+            How It Works
+          </Link>
+          <Link href="#pricing" className="px-5 py-2 rounded-full text-sm font-medium text-deepNavy/70 hover:text-deepNavy hover:bg-white/50 transition-all duration-300">
+            Pricing
+          </Link>
+        </div>
 
-        {!loading && user ? (
-          <div className="flex items-center gap-3">
-            <Link href="/dashboard">
-              <span className={`font-medium text-sm flex items-center gap-2 ${scrolled ? 'text-deepNavy' : 'text-white'}`}>
+        {/* Auth Actions */}
+        <div className="flex items-center gap-3">
+          {!loading && user ? (
+            <div className="flex items-center gap-3">
+              <Link href="/dashboard" className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-wellnessPink/5 transition-all">
                 <div className="w-8 h-8 rounded-full bg-wellnessPink/20 flex items-center justify-center border border-wellnessPink/30">
-                  <User size={16} className={scrolled ? 'text-wellnessPink' : 'text-white'} />
+                  <User size={16} className="text-wellnessPink" />
                 </div>
-                {user.firstName}
-              </span>
-            </Link>
-            <Button variant="ghost" size="sm" onClick={logout} className={`${scrolled ? 'text-gray-500 hover:text-red-500' : 'text-white/80 hover:text-white hover:bg-white/10'}`}>
-              <LogOut size={16} />
-            </Button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-4">
-            <Link href="/login">
-              <Button variant={scrolled ? "ghost" : "glass"} className={scrolled ? "text-deepNavy hover:bg-gray-100" : ""}>
+                <span className="font-medium text-sm text-deepNavy">{user.firstName}</span>
+              </Link>
+              <Button variant="ghost" size="sm" onClick={logout} className="text-gray-400 hover:text-red-500 hover:bg-transparent px-2">
+                <LogOut size={16} />
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Link href="/login" className="text-sm font-medium text-deepNavy/70 hover:text-deepNavy px-4">
                 Login
-              </Button>
-            </Link>
-            <Link href="/register">
-              <Button variant={scrolled ? "default" : "primary"}>
-                Get Started
-              </Button>
-            </Link>
-          </div>
-        )}
+              </Link>
+              <Link href="/register">
+                <Button size="sm" className="bg-deepNavy text-white hover:bg-deepNavy/90 rounded-full px-6 shadow-md transition-all hover:scale-105 active:scale-95">
+                  Get Started
+                </Button>
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
     </nav>
   )
 }
