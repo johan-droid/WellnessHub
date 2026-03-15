@@ -4,6 +4,8 @@ type ApiEnvelope<T> = {
   error?: string;
 };
 
+import { getApiBaseUrl } from '@/lib/api-base-url';
+
 class ApiClient {
   private baseUrl: string;
   private token: string | null = null;
@@ -118,6 +120,6 @@ class ApiError extends Error {
 }
 
 export const apiClient = new ApiClient(
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787'
+  getApiBaseUrl()
 );
 export { ApiError };

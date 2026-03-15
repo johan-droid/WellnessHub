@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import { ArrowLeft, Loader2 } from "lucide-react";
+import { getApiBaseUrl } from "@/lib/api-base-url";
 
 type ApiEnvelope<T> = {
   success?: boolean;
@@ -28,6 +29,18 @@ function getErrorMessage(error: unknown): string {
   return "Something went wrong. Please try again.";
 }
 
+async function parseApiPayload(response: Response): Promise<unknown> {
+  const contentType = response.headers.get("content-type") || "";
+  if (contentType.includes("application/json")) {
+    return response.json();
+  }
+
+  const text = await response.text();
+  throw new Error(
+    `API returned non-JSON response (${response.status}) from ${response.url}. Check NEXT_PUBLIC_API_URL. Preview: ${text.slice(0, 120)}`
+  );
+}
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,14 +55,14 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
+      const apiUrl = getApiBaseUrl();
       const res = await fetch(`${apiUrl}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      const payload = (await res.json()) as unknown;
+      const payload = await parseApiPayload(res);
       const data = unwrapData<{ token?: string }>(payload);
 
       if (!res.ok) {
@@ -66,7 +79,7 @@ export default function LoginPage() {
         headers: { Authorization: `Bearer ${data.token}` },
       });
       
-      const userPayload = (await userRes.json()) as unknown;
+      const userPayload = await parseApiPayload(userRes);
       const userData = unwrapData<{ user?: { id: string; email: string; firstName: string; lastName: string; createdAt: number } }>(userPayload);
       
       if (userRes.ok && userData.user) {
