@@ -1,0 +1,142 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/Button";
+import { useAuth } from "@/context/AuthContext";
+import Link from "next/link";
+import { ArrowLeft, Loader2 } from "lucide-react";
+
+export default function RegisterPage() {
+  const [formData, setFormData] = useState({ firstName: "", lastName: "", email: "", password: "" });
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+  const router = useRouter();
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
+      const res = await fetch(`${apiUrl}/api/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to register");
+      }
+
+      // Fetch user data right after getting token
+      const userRes = await fetch(`${apiUrl}/api/protected/me`, {
+        headers: { Authorization: `Bearer ${data.token}` },
+      });
+      
+      const userData = await userRes.json();
+      
+      if (userRes.ok) {
+        login(data.token, userData.user);
+        router.push("/dashboard");
+      } else {
+        throw new Error("Failed to fetch user profile");
+      }
+      
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
+      <div className="max-w-md w-full">
+        <Link href="/" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-deepNavy mb-8 transition-colors">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Home
+        </Link>
+        
+        <div className="bg-white rounded-[2rem] shadow-xl p-8 border border-gray-100">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-display font-bold text-deepNavy mb-2">Start Your Journey</h1>
+            <p className="text-gray-500">Create an account to track your wellness and adventures.</p>
+          </div>
+
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-2xl text-sm font-medium border border-red-100">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleRegister} className="space-y-5">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-bold text-deepNavy mb-2">First Name</label>
+                <input
+                  type="text"
+                  required
+                  className="w-full px-5 py-3 rounded-2xl border-2 border-gray-100 focus:border-travelTeal focus:ring-0 transition-colors bg-gray-50 focus:bg-white"
+                  placeholder="Jane"
+                  value={formData.firstName}
+                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-deepNavy mb-2">Last Name</label>
+                <input
+                  type="text"
+                  className="w-full px-5 py-3 rounded-2xl border-2 border-gray-100 focus:border-travelTeal focus:ring-0 transition-colors bg-gray-50 focus:bg-white"
+                  placeholder="Doe"
+                  value={formData.lastName}
+                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-deepNavy mb-2">Email Address</label>
+              <input
+                type="email"
+                required
+                className="w-full px-5 py-3 rounded-2xl border-2 border-gray-100 focus:border-memoryPurple focus:ring-0 transition-colors bg-gray-50 focus:bg-white"
+                placeholder="jane@example.com"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-bold text-deepNavy mb-2">Password</label>
+              <input
+                type="password"
+                required
+                minLength={6}
+                className="w-full px-5 py-3 rounded-2xl border-2 border-gray-100 focus:border-wellnessPink focus:ring-0 transition-colors bg-gray-50 focus:bg-white"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              />
+            </div>
+
+            <Button type="submit" variant="gradient" className="w-full py-4 text-lg mt-6" disabled={isLoading}>
+              {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : "Create Account"}
+            </Button>
+          </form>
+
+          <p className="mt-8 text-center text-gray-500 text-sm">
+            Already have an account?{" "}
+            <Link href="/login" className="font-bold text-travelTeal hover:underline">
+              Sign In
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

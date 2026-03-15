@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .animate-delay-100 { animation-delay: 100ms; }
+  .animate-delay-200 { animation-delay: 200ms; }
+  .animate-delay-300 { animation-delay: 300ms; }
+  
+  .gradient-bg-animate {
+    background-size: 200% 200%;
+    animation: gradient-move 15s ease infinite;
+  }
+
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .soft-glow {
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .soft-glow:hover {
+    box-shadow: 0 0 35px rgba(255, 105, 180, 0.5);
+  }
+
+  .feature-card {
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .feature-card:hover {
+    transform: translateY(-10px) scale(1.02);
+  }
+
+  .float-elegant {
+    animation: smooth-float 8s ease-in-out infinite;
+  }
+
+  .framer-entry {
+    animation: framer-entry 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .timeline-line-grow {
+    animation: timeline-line-grow linear forwards;
+    animation-timeline: view();
+    animation-range: entry 10% exit 90%;
+  }
+
+  .step-number-active {
+    animation: pulse-glow 3s infinite;
+  }
+
+  .timeline-float {
+    animation: smooth-float 10s ease-in-out infinite;
+  }
+}
