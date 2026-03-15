@@ -100,9 +100,17 @@ export function errorResponse(message: string, status: number = 400) {
 
 export class RateLimiter {
   private storage: Map<string, { count: number; expires: number }> = new Map();
+  private lastCleanupAt = 0;
+  private readonly cleanupIntervalMs = 15 * 60 * 1000;
 
   isAllowed(key: string, limit: number, windowMs: number): boolean {
     const now = Date.now();
+
+    if (now - this.lastCleanupAt >= this.cleanupIntervalMs) {
+      this.cleanup(now);
+      this.lastCleanupAt = now;
+    }
+
     const record = this.storage.get(key);
 
     if (!record || now > record.expires) {
@@ -118,9 +126,7 @@ export class RateLimiter {
     return true;
   }
 
-  // Optional: Background cleanup could be added, or just clear occasionally
-  cleanup() {
-    const now = Date.now();
+  cleanup(now = Date.now()) {
     for (const [key, record] of this.storage.entries()) {
       if (now > record.expires) {
         this.storage.delete(key);
@@ -130,5 +136,3 @@ export class RateLimiter {
 }
 
 export const rateLimiter = new RateLimiter();
-// Cleanup every 15 minutes
-setInterval(() => rateLimiter.cleanup(), 15 * 60 * 1000);
