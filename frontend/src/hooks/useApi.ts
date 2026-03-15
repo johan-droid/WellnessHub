@@ -18,7 +18,7 @@ export function useApi<T>(
     error: null,
   });
 
-  const fetch = useCallback(async () => {
+  const runRequest = useCallback(async () => {
     setState({ data: null, loading: true, error: null });
     try {
       const data = await apiClient.get<T>(endpoint);
@@ -31,12 +31,20 @@ export function useApi<T>(
   }, [endpoint]);
 
   useEffect(() => {
-    if (immediate) {
-      void fetch();
+    if (!immediate) {
+      return;
     }
-  }, [endpoint, immediate, fetch, ...dependencies]);
 
-  const refetch = useCallback(() => fetch(), [fetch]);
+    const timeoutId = setTimeout(() => {
+      void runRequest();
+    }, 0);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [immediate, runRequest, dependencies]);
+
+  const refetch = useCallback(() => runRequest(), [runRequest]);
 
   return { ...state, refetch };
 }

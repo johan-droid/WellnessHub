@@ -62,7 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } else {
       setLoading(false);
     }
-  }, []); // Empty dependencies - run only on mount
+  }, [fetchUser]);
 
   const login = (t: string, u: User, expiresIn?: number) => {
     tokenStorage.set(t, expiresIn);
@@ -88,9 +88,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ user, token, login, logout, refreshUser, loading, error }}>
-      {children}
-    </AuthContext.Provider>
-  );
       {children}
     </AuthContext.Provider>
   );

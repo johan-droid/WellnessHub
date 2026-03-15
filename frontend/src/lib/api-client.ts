@@ -29,7 +29,7 @@ class ApiClient {
   private async parseJsonSafe(response: Response): Promise<unknown> {
     try {
       return await response.json();
-    } catch (err) {
+    } catch {
       throw new ApiError(
         'Invalid JSON response from server',
         response.status,
