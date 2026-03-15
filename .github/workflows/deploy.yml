@@ -17,7 +17,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           command: deploy
-          workingDirectory: backend
+          working-directory: backend
 
   frontend-deploy:
     runs-on: ubuntu-latest
