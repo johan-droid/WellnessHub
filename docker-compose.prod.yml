@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: production
+    container_name: wellbeing-backend
+    environment:
+      - NODE_ENV=production
+      - ENVIRONMENT=production
+    ports:
+      - "8787:8787"
+    restart: always
+    networks:
+      - wellbeing-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: production
+        NEXT_PUBLIC_API_URL: http://backend:8787
+    container_name: wellbeing-frontend
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://backend:8787
+      - NEXT_PUBLIC_ENVIRONMENT=production
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: always
+    networks:
+      - wellbeing-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: wellbeing-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - frontend
+      - backend
+    restart: always
+    networks:
+      - wellbeing-network
+
+networks:
+  wellbeing-network:
+    driver: bridge

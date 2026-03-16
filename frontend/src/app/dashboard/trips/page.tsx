@@ -1,5 +1,14 @@
-
 "use client";
+
+// Added at top of file:
+type ApiEnvelope<T> = { success?: boolean; data?: T; error?: string; }
+function unwrapData<T>(payload: unknown): T {
+  const env = payload as ApiEnvelope<T>;
+  if (env && typeof env === "object" && "data" in env) {
+    return env.data as T;
+  }
+  return payload as T;
+}
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -67,8 +76,9 @@ export default function TripPlannerPage() {
         const authHeaders = { Authorization: `Bearer ${token}` };
         const tripsRes = await fetch(`${API_URL}/api/protected/trips`, { headers: authHeaders });
         if (!tripsRes.ok) throw new Error("Failed to load trips.");
-        const tripsData = await tripsRes.json();
-        const tripList = tripsData.data?.trips || [];
+        const tripsPayload = await tripsRes.json() as unknown;
+        const tripsData = unwrapData<{ trips?: Trip[] }>(tripsPayload);
+        const tripList = tripsData.trips ?? [];
         if (tripList.length > 0) {
           setSelectedTrip(tripList[0]);
         }
@@ -93,8 +103,9 @@ export default function TripPlannerPage() {
         const authHeaders = { Authorization: `Bearer ${token}` };
         const actRes = await fetch(`${API_URL}/api/protected/trips/${selectedTrip.id}`, { headers: authHeaders });
         if (!actRes.ok) throw new Error("Failed to load activities.");
-        const actData = await actRes.json();
-        setActivities(actData.data?.activities || []);
+        const actPayload = await actRes.json() as unknown;
+        const actData = unwrapData<{ activities?: TripActivity[] }>(actPayload);
+        setActivities(actData.activities ?? []);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unable to load activities.");
       } finally {
@@ -216,3 +227,4 @@ export default function TripPlannerPage() {
     </div>
   );
 }
+

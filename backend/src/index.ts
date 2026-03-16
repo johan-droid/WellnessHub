@@ -145,7 +145,16 @@ app.post('/api/auth/register', async (c) => {
     return c.json(errorResponse(`Validation failed: ${validation.error.issues.map((e: any) => e.message).join(', ')}`), 400)
   }
 
-  const { email, password, firstName, lastName } = validation.data
+  const { email: rawEmail, password, firstName, lastName } = validation.data
+  // FIX 1: Normalise email to lowercase so User@Example.com and user@example.com are the same account
+  const email = rawEmail.toLowerCase()
+
+  // FIX 2: Explicit duplicate-email check -> proper 409 instead of a generic DB constraint error
+  const [existing] = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1)
+  if (existing) {
+    return c.json(errorResponse('Email already registered', 409), 409)
+  }
+
   const passwordHash = await hashPassword(password)
   const id = uuidv4()
 
@@ -166,7 +175,7 @@ app.post('/api/auth/register', async (c) => {
     return c.json(successResponse({ message: 'User created successfully', token }, 201), 201)
   } catch (e: any) {
     console.error('Registration error:', e);
-    return c.json(errorResponse('Email already exists or registration failed'), 400)
+    return c.json(errorResponse('Registration failed'), 400)
   }
 })
 
@@ -183,10 +192,17 @@ app.post('/api/auth/login', async (c) => {
   const validation = loginSchema.safeParse(body)
   if (!validation.success) return c.json(errorResponse('Invalid input'), 400)
 
-  const { email, password } = validation.data
+  const { email: rawLoginEmail, password } = validation.data
+  // FIX 1: Match the lowercase normalisation applied during registration
+  const email = rawLoginEmail.toLowerCase()
   const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1)
-  
-  if (!user || !(await verifyPassword(password, user.passwordHash))) {
+
+  // FIX 3: Always run verifyPassword regardless of whether the user was found.
+  // The original short-circuit `!user || !(await verifyPassword(...))` skips hashing
+  // when the email doesn't exist, creating a measurable timing difference that lets
+  // an attacker enumerate registered email addresses.
+  const passwordValid = user ? await verifyPassword(password, user.passwordHash) : false
+  if (!user || !passwordValid) {
     return c.json(errorResponse('Invalid credentials', 401), 401)
   }
 
@@ -276,7 +292,7 @@ app.get('/api/protected/settings', async (c) => {
         theme: 'light',
         language: 'English (US)',
         units: 'metric',
-      twoFactorEnabled: false,
+        twoFactorEnabled: false,
         notificationsEnabled: true,
         connectedGoogle: false,
         connectedApple: false,
@@ -579,8 +595,9 @@ app.post('/api/protected/wellness-logs', async (c) => {
     id,
     userId,
     ...validation.data,
+    // FIX 4: Removed `updatedAt: Date.now()` - the DB table (migration 0000) has no
+    // updated_at column on wellness_logs, so including it causes an insert failure.
     loggedAt: Date.now(),
-    updatedAt: Date.now()
   })
 
   return c.json(successResponse({ id, message: 'Log created' }, 201), 201)

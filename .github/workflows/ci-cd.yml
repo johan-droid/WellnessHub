@@ -1,3 +1,64 @@
+name: CI / Build and Publish
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install frontend deps
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Install backend deps
+        working-directory: backend
+        run: npm ci
+
+      - name: Run backend tests
+        working-directory: backend
+        run: npm test
+
+  docker-build-and-push:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/wellness-frontend:latest
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/wellness-backend:latest
 name: CI/CD Pipeline
 
 on:

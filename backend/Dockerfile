@@ -3,7 +3,9 @@ WORKDIR /app
 
 # Install dependencies
 COPY package.json package-lock.json* ./
-RUN npm ci
+# Install dependencies; use production-only install when building for production
+ARG NODE_ENV=development
+RUN if [ "$NODE_ENV" = "production" ]; then npm ci --omit=dev --prefer-offline --no-audit --progress=false; else npm ci --prefer-offline --no-audit --progress=false; fi
 
 # Copy source code
 COPY . .
