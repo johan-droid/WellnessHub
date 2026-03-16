@@ -1,3 +1,145 @@
+<<<<<<< D:/Wellbeing application/README.md
+<<<<<<< D:/Wellbeing application/README.md
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=WellnessHub&fontSize=70&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Your%20wellness%20journey%2C%20beautifully%20connected&descAlignY=60&descSize=18" width="100%"/>
+</p>
+
+<p align="center">
+  <a href="https://git.io/typing-svg">
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=6EE7B7&center=true&vCenter=true&width=700&lines=🏥+Wellness+%2B+Travel+Planning+Platform;🗺️+Plan+trips+with+health+in+mind;💓+Track+metrics+%26+wellness+logs;🔐+Enterprise-grade+security+with+2FA;☁️+Serverless+%7C+Cloudflare+Workers+%2B+Vercel" alt="Typing SVG" />
+  </a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript"/>
+  <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js"/>
+  <img src="https://img.shields.io/badge/Hono-E36002?style=for-the-badge&logo=hono&logoColor=white" alt="Hono"/>
+  <img src="https://img.shields.io/badge/Cloudflare_Workers-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare Workers"/>
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS"/>
+</p>
+=======
+<<<<<<< HEAD
+# WellnessHub
+>>>>>>> D:/Wellbeing application/README.md.undo_before
+
+A full-stack wellness and travel planning platform. Plan trips with health in mind, track daily wellness logs, record health metrics, and manage your profile — all in one place.
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Quick Start with Docker Compose](#quick-start-with-docker-compose)
+  - [Manual Setup](#manual-setup)
+- [Environment Variables](#environment-variables)
+- [API Overview](#api-overview)
+- [Database Schema](#database-schema)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Overview
+
+WellnessHub connects wellness-focused travel planning with personal health tracking. Users can plan trips, log daily wellness activities (mood, sleep, exercise, meditation, nutrition), record health metrics (heart rate, blood pressure, weight, steps, water intake), and configure personal preferences — with security features like two-factor authentication built in.
+
+---
+
+## Features
+
+- **Authentication** — Registration and login with JWT tokens, PBKDF2 password hashing, rate limiting, and optional two-factor authentication (TOTP)
+- **Trip Management** — Create, update, and delete trips with destination, dates, budget, and status tracking
+- **Trip Activities** — Schedule and track activities within a trip (wellness, sightseeing, dining, transport, accommodation)
+- **Wellness Logs** — Log mood, sleep, exercise, meditation, nutrition, symptoms, and vitals with ratings and duration
+- **Health Metrics** — Record and query heart rate, blood pressure, weight, steps, and water intake over time
+- **User Profile & Settings** — Manage profile details, theme, language, unit preferences, and notification settings
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Backend runtime | [Cloudflare Workers](https://workers.cloudflare.com/) |
+| Backend framework | [Hono](https://hono.dev/) |
+| Database | [Cloudflare D1](https://developers.cloudflare.com/d1/) (SQLite) |
+| ORM | [Drizzle ORM](https://orm.drizzle.team/) |
+| Validation | [Zod](https://zod.dev/) |
+| 2FA | [OTPLib](https://github.com/yeojz/otplib) |
+| Frontend framework | [Next.js](https://nextjs.org/) (React 19) |
+| Styling | [Tailwind CSS](https://tailwindcss.com/) |
+| Animations | [Framer Motion](https://www.framer.com/motion/) |
+| UI primitives | [Radix UI](https://www.radix-ui.com/) |
+| Icons | [Lucide React](https://lucide.dev/) |
+| Language | TypeScript (throughout) |
+| CI/CD | GitHub Actions |
+| Frontend hosting | [Vercel](https://vercel.com/) |
+
+---
+
+## Project Structure
+
+```
+WellnessHub/
+├── backend/                    # Cloudflare Workers API (Hono + Drizzle)
+│   ├── src/
+│   │   ├── index.ts            # Main application entry point & route handlers
+│   │   ├── schemas.ts          # Zod request/response validation schemas
+│   │   ├── auth-utils.ts       # Password hashing, JWT helpers
+│   │   ├── utils.ts            # Shared utility functions
+│   │   └── db/
+│   │       └── schema.ts       # Drizzle ORM database schema
+│   ├── drizzle/                # SQL migration files
+│   ├── test/                   # Unit tests
+│   ├── wrangler.jsonc          # Cloudflare Workers configuration
+│   └── README.md               # Backend-specific setup guide
+│
+├── frontend/                   # Next.js application
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── (auth)/         # Login and register pages
+│   │   │   └── dashboard/      # Protected pages (trips, health, settings…)
+│   │   ├── components/         # UI, shared, and section components
+│   │   ├── context/            # React context (auth state)
+│   │   ├── hooks/              # Custom React hooks
+│   │   └── lib/                # API client, token storage, validation helpers
+│   ├── .env.example
+│   └── README.md               # Frontend-specific setup guide
+│
+├── wellness-travel-hub/        # Standalone UI design artifacts (HTML/CSS)
+├── .github/workflows/          # CI and deployment pipelines
+├── docker-compose.yml          # Local development orchestration
+├── nginx.conf                  # Optional reverse proxy configuration
+├── DEPLOYMENT.md               # Detailed deployment instructions
+└── .env.example                # Root environment variable template
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) 18+ and npm
+- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/) (for the Docker path)
+- A [Cloudflare account](https://dash.cloudflare.com/sign-up) with Workers and D1 enabled (for deployment)
+
+<<<<<<< D:/Wellbeing application/README.md
+---
+
+### 🐳 Quick Start with Docker Compose
+=======
+### Quick Start with Docker Compose
+=======
+=======
+>>>>>>> C:/Users/sahoo/.windsurf/worktrees/Wellbeing application/Wellbeing application-402b65c5/README.md
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=WellnessHub&fontSize=70&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Your%20wellness%20journey%2C%20beautifully%20connected&descAlignY=60&descSize=18" width="100%"/>
 </p>
@@ -266,6 +408,11 @@ WellnessHub/
 ---
 
 ### 🐳 Quick Start with Docker Compose
+<<<<<<< D:/Wellbeing application/README.md
+>>>>>>> 1d5f3a073c61e84b5f799dd89a7bda440a2be201
+>>>>>>> D:/Wellbeing application/README.md.undo_before
+=======
+>>>>>>> C:/Users/sahoo/.windsurf/worktrees/Wellbeing application/Wellbeing application-402b65c5/README.md
 
 The fastest way to run the full stack locally:
 
