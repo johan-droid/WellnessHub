@@ -4,62 +4,23 @@
   "id": "1e49087f-6478-43de-bd37-06b397aa482f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "logs": {
-      "name": "logs",
+    "users": {
+      "name": "users",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "type": {
-          "name": "type",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "notes": {
-          "name": "notes",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "logged_at": {
-          "name": "logged_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 1773560860496
-        }
+        "id": { "name": "id", "type": "text", "primaryKey": true, "notNull": true, "autoincrement": false },
+        "email": { "name": "email", "type": "text", "primaryKey": false, "notNull": true, "autoincrement": false },
+        "password_hash": { "name": "password_hash", "type": "text", "primaryKey": false, "notNull": true, "autoincrement": false },
+        "first_name": { "name": "first_name", "type": "text", "primaryKey": false, "notNull": false, "autoincrement": false },
+        "last_name": { "name": "last_name", "type": "text", "primaryKey": false, "notNull": false, "autoincrement": false },
+        "bio": { "name": "bio", "type": "text", "primaryKey": false, "notNull": false, "autoincrement": false },
+        "profile_picture": { "name": "profile_picture", "type": "text", "primaryKey": false, "notNull": false, "autoincrement": false },
+        "created_at": { "name": "created_at", "type": "integer", "primaryKey": false, "notNull": true, "autoincrement": false, "default": "(strftime('%s','now') * 1000)" },
+        "updated_at": { "name": "updated_at", "type": "integer", "primaryKey": false, "notNull": false, "autoincrement": false }
       },
-      "indexes": {},
-      "foreignKeys": {
-        "logs_user_id_users_id_fk": {
-          "name": "logs_user_id_users_id_fk",
-          "tableFrom": "logs",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
+      "indexes": {
+        "users_email_unique": { "name": "users_email_unique", "columns": ["email"], "isUnique": true }
       },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
@@ -67,142 +28,104 @@
     "trips": {
       "name": "trips",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "title": {
-          "name": "title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "destination": {
-          "name": "destination",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "start_date": {
-          "name": "start_date",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "end_date": {
-          "name": "end_date",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "status": {
-          "name": "status",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'planning'"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 1773560860495
-        }
+        "id": { "name": "id", "type": "text", "primaryKey": true, "notNull": true, "autoincrement": false },
+        "user_id": { "name": "user_id", "type": "text", "primaryKey": false, "notNull": true, "autoincrement": false },
+        "title": { "name": "title", "type": "text", "primaryKey": false, "notNull": true, "autoincrement": false },
+        "destination": { "name": "destination", "type": "text", "primaryKey": false, "notNull": false, "autoincrement": false },
+        "description": { "name": "description", "type": "text", "primaryKey": false, "notNull": false, "autoincrement": false },
+        "start_date": { "name": "start_date", "type": "integer", "primaryKey": false, "notNull": false, "autoincrement": false },
+        "end_date": { "name": "end_date", "type": "integer", "primaryKey": false, "notNull": false, "autoincrement": false },
+        "budget": { "name": "budget", "type": "real", "primaryKey": false, "notNull": false, "autoincrement": false },
+        "status": { "name": "status", "type": "text", "primaryKey": false, "notNull": false, "autoincrement": false, "default": "'planning'" },
+        "created_at": { "name": "created_at", "type": "integer", "primaryKey": false, "notNull": true, "autoincrement": false, "default": "(strftime('%s','now') * 1000)" },
+        "updated_at": { "name": "updated_at", "type": "integer", "primaryKey": false, "notNull": false, "autoincrement": false }
       },
       "indexes": {},
       "foreignKeys": {
         "trips_user_id_users_id_fk": {
           "name": "trips_user_id_users_id_fk",
-          "tableFrom": "trips",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "tableFrom": "trips", "tableTo": "users",
+          "columnsFrom": ["user_id"], "columnsTo": ["id"],
+          "onDelete": "no action", "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "users": {
-      "name": "users",
+    "trip_activities": {
+      "name": "trip_activities",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "email": {
-          "name": "email",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "password_hash": {
-          "name": "password_hash",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "first_name": {
-          "name": "first_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "last_name": {
-          "name": "last_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 1773560860494
+        "id": { "name": "id", "type": "text", "primaryKey": true, "notNull": true, "autoincrement": false },
+        "trip_id": { "name": "trip_id", "type": "text", "primaryKey": false, "notNull": true, "autoincrement": false },
+        "activity": { "name": "activity", "type": "text", "primaryKey": false, "notNull": true, "autoincrement": false },
+        "notes": { "name": "notes", "type": "text", "primaryKey": false, "notNull": false, "autoincrement": false },
+        "created_at": { "name": "created_at", "type": "integer", "primaryKey": false, "notNull": true, "autoincrement": false, "default": "(strftime('%s','now') * 1000)" }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "trip_activities_trip_id_trips_id_fk": {
+          "name": "trip_activities_trip_id_trips_id_fk",
+          "tableFrom": "trip_activities", "tableTo": "trips",
+          "columnsFrom": ["trip_id"], "columnsTo": ["id"],
+          "onDelete": "cascade", "onUpdate": "no action"
         }
       },
-      "indexes": {
-        "users_email_unique": {
-          "name": "users_email_unique",
-          "columns": [
-            "email"
-          ],
-          "isUnique": true
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "wellness_logs": {
+      "name": "wellness_logs",
+      "columns": {
+        "id": { "name": "id", "type": "text", "primaryKey": true, "notNull": true, "autoincrement": false },
+        "user_id": { "name": "user_id", "type": "text", "primaryKey": false, "notNull": true, "autoincrement": false },
+        "type": { "name": "type", "type": "text", "primaryKey": false, "notNull": true, "autoincrement": false },
+        "trip_id": { "name": "trip_id", "type": "text", "primaryKey": false, "notNull": false, "autoincrement": false },
+        "value": { "name": "value", "type": "real", "primaryKey": false, "notNull": false, "autoincrement": false },
+        "rating": { "name": "rating", "type": "integer", "primaryKey": false, "notNull": false, "autoincrement": false },
+        "duration": { "name": "duration", "type": "integer", "primaryKey": false, "notNull": false, "autoincrement": false },
+        "notes": { "name": "notes", "type": "text", "primaryKey": false, "notNull": false, "autoincrement": false },
+        "logged_at": { "name": "logged_at", "type": "integer", "primaryKey": false, "notNull": true, "autoincrement": false, "default": "(strftime('%s','now') * 1000)" }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "wellness_logs_user_id_users_id_fk": {
+          "name": "wellness_logs_user_id_users_id_fk",
+          "tableFrom": "wellness_logs", "tableTo": "users",
+          "columnsFrom": ["user_id"], "columnsTo": ["id"],
+          "onDelete": "no action", "onUpdate": "no action"
+        },
+        "wellness_logs_trip_id_trips_id_fk": {
+          "name": "wellness_logs_trip_id_trips_id_fk",
+          "tableFrom": "wellness_logs", "tableTo": "trips",
+          "columnsFrom": ["trip_id"], "columnsTo": ["id"],
+          "onDelete": "set null", "onUpdate": "no action"
         }
       },
-      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "health_metrics": {
+      "name": "health_metrics",
+      "columns": {
+        "id": { "name": "id", "type": "text", "primaryKey": true, "notNull": true, "autoincrement": false },
+        "user_id": { "name": "user_id", "type": "text", "primaryKey": false, "notNull": true, "autoincrement": false },
+        "metric_type": { "name": "metric_type", "type": "text", "primaryKey": false, "notNull": true, "autoincrement": false },
+        "value": { "name": "value", "type": "real", "primaryKey": false, "notNull": true, "autoincrement": false },
+        "unit": { "name": "unit", "type": "text", "primaryKey": false, "notNull": false, "autoincrement": false },
+        "recorded_at": { "name": "recorded_at", "type": "integer", "primaryKey": false, "notNull": true, "autoincrement": false, "default": "(strftime('%s','now') * 1000)" }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "health_metrics_user_id_users_id_fk": {
+          "name": "health_metrics_user_id_users_id_fk",
+          "tableFrom": "health_metrics", "tableTo": "users",
+          "columnsFrom": ["user_id"], "columnsTo": ["id"],
+          "onDelete": "no action", "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
@@ -210,12 +133,6 @@
   },
   "views": {},
   "enums": {},
-  "_meta": {
-    "schemas": {},
-    "tables": {},
-    "columns": {}
-  },
-  "internal": {
-    "indexes": {}
-  }
+  "_meta": { "schemas": {}, "tables": {}, "columns": {} },
+  "internal": { "indexes": {} }
 }

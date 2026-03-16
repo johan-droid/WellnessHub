@@ -8,7 +8,8 @@ WORKDIR /app
 
 # Install dependencies including tailwind/postcss
 COPY package.json package-lock.json* ./
-RUN npm ci
+# Prefer offline installs and reduce noise during image build
+RUN npm ci --prefer-offline --no-audit --progress=false
 
 # Build the application
 FROM base AS builder

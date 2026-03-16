@@ -187,6 +187,29 @@ wrangler deploy --env production
 - Workflow automatically deploys to Cloudflare Workers
 - Requires `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets
 
+### Database Migrations (PowerShell)
+
+Run backend SQLite migrations from PowerShell with the exact commands below.
+
+```powershell
+Set-Location 'D:/Wellbeing application/backend'
+$sqlite = Join-Path $env:LOCALAPPDATA 'Microsoft\WinGet\Links\sqlite3.exe'
+
+# Apply migrations in order
+Get-Content drizzle/0000_loose_liz_osborn.sql | & $sqlite database.sqlite
+Get-Content drizzle/0001_fix_schema_alignment.sql | & $sqlite database.sqlite
+Get-Content drizzle/0002_fix_schema_alignment.sql | & $sqlite database.sqlite
+
+# Verify tables
+& $sqlite database.sqlite ".tables"
+```
+
+If `sqlite3.exe` is missing, install it once:
+
+```powershell
+winget install --id SQLite.SQLite -e --accept-package-agreements --accept-source-agreements
+```
+
 ### Vercel (Frontend)
 
 **Prerequisites:**

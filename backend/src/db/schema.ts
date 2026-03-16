@@ -43,9 +43,9 @@ export const wellnessLogs = sqliteTable('wellness_logs', {
   duration: integer('duration'), // Minutes for exercise/meditation/sleep
   notes: text('notes'),
   
-  loggedAt: integer('logged_at').notNull().default(Date.now()),
-  createdAt: integer('created_at').notNull().default(Date.now()),
-  updatedAt: integer('updated_at').notNull().default(Date.now()),
+  loggedAt: integer('logged_at').notNull().$defaultFn(() => Date.now()),
+  createdAt: integer('created_at').notNull().$defaultFn(() => Date.now()),
+  updatedAt: integer('updated_at').notNull().$defaultFn(() => Date.now()),
 });
 
 // Backward-compatible alias used by existing route handlers.
@@ -62,8 +62,8 @@ export const tripActivities = sqliteTable('trip_activities', {
   estimatedDuration: integer('estimated_duration'), // Minutes
   category: text('category'), // wellness | sightseeing | dining | transport | accommodation
   completed: integer('completed').default(0), // 0 | 1 (boolean)
-  createdAt: integer('created_at').notNull().default(Date.now()),
-  updatedAt: integer('updated_at').notNull().default(Date.now()),
+  createdAt: integer('created_at').notNull().$defaultFn(() => Date.now()),
+  updatedAt: integer('updated_at').notNull().$defaultFn(() => Date.now()),
 });
 
 // ============ HEALTH METRICS TABLE ============

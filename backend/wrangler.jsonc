@@ -6,6 +6,17 @@
   "compatibility_flags": [
     "nodejs_compat"
   ],
+
+  // Top-level binding used by bare `--local` runs and `wrangler dev`
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "wellness-hub-db",
+      "database_id": "local-dev-db",
+      "migrations_dir": "drizzle"
+    }
+  ],
+
   "env": {
     "development": {
       "vars": {
@@ -34,7 +45,7 @@
         {
           "binding": "DB",
           "database_name": "wellness-hub-db",
-          "database_id": "prod-db-id",
+          "database_id": "3c9776b6-0cd4-4fe7-9565-edbc7cf2197a",
           "migrations_dir": "drizzle"
         }
       ],

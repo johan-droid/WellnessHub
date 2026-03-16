@@ -1,4 +1,26 @@
-# Dependencies
+# Node and build artifacts
+node_modules
+**/node_modules
+dist
+build
+.next
+.wrangler
+.vscode
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs and coverage
+*.log
+coverage
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Misc
+ssl/# Dependencies
 node_modules/
 
 # IDEs
