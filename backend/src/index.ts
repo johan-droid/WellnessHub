@@ -1,4 +1,4 @@
-import { Hono } from 'hono'
+git pull origin masterimport { Hono } from 'hono'
 import type { D1Database } from '@cloudflare/workers-types'
 import { cors } from 'hono/cors'
 import { drizzle } from 'drizzle-orm/d1'
